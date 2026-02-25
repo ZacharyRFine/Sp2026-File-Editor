@@ -1,13 +1,20 @@
+import requests
 
-from boxsdk import OAuth2, Client
+ACCESS_TOKEN = "U0krlwTj9JfFHq6JUAvvIOcD37D4PDZZ"
+FOLDER_ID = "358896625450"
 
-# You'll need to set up OAuth credentials first
-access_token = "U0krlwTj9JfFHq6JUAvvIOcD37D4PDZZ"
-client = Client(OAuth2(access_token=access_token))
+headers = {
+    "Authorization": f"Bearer {ACCESS_TOKEN}"
+}
 
-# Get the folder (use the ID from your URL: 358896625450)
-folder = client.folder("358896625450")
+# Get folder items
+url = f"https://api.box.com/2.0/folders/{FOLDER_ID}/items"
+response = requests.get(url, headers=headers)
 
-# List items in the folder
-for item in folder.get_items():
-    print(item.name)
+if response.status_code == 200:
+    items = response.json()
+    for item in items['entries']:
+        print(item['name'])
+else:
+    print(f"Error: {response.status_code}")
+    print(response.text)
